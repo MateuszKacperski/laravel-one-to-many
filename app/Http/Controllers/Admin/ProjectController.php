@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Type;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +33,8 @@ class ProjectController extends Controller
     public function create()
     {
         $project = new Project();
-        return view('admin.projects.create', compact('project'));
+        $types = Type::selected('label', 'id')->get();
+        return view('admin.projects.create', compact('project', 'types'));
     }
 
     /**
@@ -44,7 +46,8 @@ class ProjectController extends Controller
             'title' => 'required|string|min:5|max:50|unique:projects',
             'content' => 'required|string',
             'image' => 'nullable|image',
-            'is_published' => 'nullable|boolean'
+            'is_published' => 'nullable|boolean',
+            'type_id' => 'nullabe|exists:types,id'
         ],[
             'title.required' => 'Il titolo e obligatorio',
             'content.reqwuire' => 'La descrizione e obligatoria',
@@ -53,6 +56,7 @@ class ProjectController extends Controller
             'title.unique' => 'Il titolo deve essere univoco',
             'image.image' => 'Il file inserito non e un immagine',
             'is_published.boolean' => 'Il valore del campo publicazione non e valido',
+            'type_id.exists' => 'Tipo non valido'
         ]);
 
         $data = $request->all();
@@ -93,7 +97,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $types = Type::selected('label', 'id')->get();
+        return view('admin.projects.edit', compact('project', 'types'));
     }
 
     /**
@@ -106,7 +111,8 @@ class ProjectController extends Controller
            'title' => ['required', 'string', 'min:5', 'max:50', Rule::unique('projects')->ignore($project->id)],
             'content' => 'required|string',
             'image' => 'nullable|image',
-            'is_published' => 'nullable|boolean'
+            'is_published' => 'nullable|boolean',
+            'type_id' => 'nullabe|exists:types,id'
         ],[
             'title.required' => 'Il titolo e obligatorio',
             'content.reqwuire' => 'La descrizione e obligatoria',
@@ -115,6 +121,7 @@ class ProjectController extends Controller
             'title.unique' => 'Il titolo deve essere univoco',
             'image.image' => 'Il file inserito non e un immagine',
             'is_published.boolean' => 'Il valore del campo publicazione non e valido',
+            'type_id.exists' => 'Tipo non valido'
         ]);
 
         $data = $request->all();

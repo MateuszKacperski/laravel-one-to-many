@@ -5,7 +5,9 @@
 @section('content')
 
 <header>
-    <h1 class="my-5">{{$project->title}}</h1>
+    <h1 class="mt-4 mb-1">{{$project->title}}</h1>
+
+    <h4>Tipo: @if($project->type) <span class="badge" style="background-color: {{$project->type->color}}">{{$project->type->lable}}</span>  @else Nessun @endif</h4>
 </header>
 
 <div class="clearfix">
